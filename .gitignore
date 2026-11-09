@@ -29,5 +29,12 @@ next-env.d.ts
 # vercel
 .vercel
 
+# wrangler
+.wrangler
+
+# scratch
+login.out
+login.err
+
 .vercel
 .env*
