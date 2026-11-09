@@ -37,7 +37,11 @@ const paths = [
 ];
 
 const isAsset = (p) =>
-  p.startsWith("/ng-public/") || /\.(js|css|png|jpe?g|svg|webp|gif|ico|woff2?|json|txt|map)$/i.test(p);
+  p.startsWith("/ng-public/") ||
+  p.startsWith("/pubapi/") ||
+  p.startsWith("/payload/") ||
+  p.startsWith("/widgets/") ||
+  /\.(js|css|png|jpe?g|svg|webp|gif|ico|woff2?|json|txt|map)$/i.test(p);
 
 function saveFile(pathname, buf) {
   const out = OUT + pathname;
@@ -52,6 +56,7 @@ function processHtml(html) {
   html = html.replace(/media="print"/g, 'media="all"');
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com\//g, '$1="/');
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com"/g, '$1="/');
+  html = html.replace(/領取歡迎贈金\*/g, "領取 50% 贈金高達 $200");
   return html;
 }
 

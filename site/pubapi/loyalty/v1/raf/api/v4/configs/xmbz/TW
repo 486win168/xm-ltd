@@ -1,0 +1,1 @@
+{"data":{"refConfig":{"requiredLots":0,"packages":{"limit":{"type":"CASH","money":{"currency":"USD","amount":50000}},"packages":[{"size":346,"amount":80}]},"durationType":"PERMANENT","expirationDate":null},"recConfig":{"requiredLots":1.0,"reward":{"type":"CREDIT","money":{"currency":"USD","amount":0}},"expiration":{"value":90}},"tierRewards":[]}}
