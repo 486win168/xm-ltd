@@ -1,46 +1,44 @@
-# xm-ltd.com — XM（繁體中文）網站 1:1 靜態鏡像
+# xm-ltd.com — XM（繁體中文）網站 1:1 鏡像
 
-把 `https://www.xm.com/tw` 官方網站做 **1:1 靜態鏡像**，部署到 `https://xm-ltd.com`，全程零成本。
-站內連結**留在自己的網域**（`xm-ltd.com`），不再跳回官方。
+把 `https://www.xm.com/tw` 官方網站做成 **1:1 鏡像（含互動）**，部署到 `https://xm-ltd.com`，零成本。
+保留官方 HTML 與 Angular 應用，站內連結留在自己網域。
 
-## 驗證（與官方逐項比對）
+## 這是什麼
 
-- 首頁 `document.body.innerText`：1259 字元（與官方相同）、逐行差異：0（僅多出官方 lazy-load 未顯示的 6 行獎項名稱）
-- H1 位置／字級／字色、`body.scrollHeight`（5481）：與官方相同
-- 標題、字型、樣式表媒體（`all`）、圖片數、無破圖：與官方相同
+- 從官方頁面取得「伺服器原始 HTML + 其引用之站內資源」，部署到同名路徑。
+- 官方 app 的 JS／CSS／圖片多由官方 CDN（`cloud.xm-cdn.com`）以絕對網址提供，鏡像後仍由該 CDN 載入；
+  少數走 `www.xm.com` 根相對路徑的資源則鏡像到本網域。
+- 因此頁面是「真的在跑官方 app」：下拉選單、hover、cookie 同意、動態區塊都會動。
+- `<base>` 保持官方相對值、移除 CSP、`media="print"→all`、並把 `https://www.xm.com/...` 連結改寫為站內相對路徑。
 
-## 做法
+## 驗證（與官方 `/tw` 逐項比對，全部相同）
 
-用真實瀏覽器（Opera GX 遠端除錯 CDP）載入官方頁、等 Angular 渲染出**最終中文 DOM**，擷取快照後處理：
+- 標題、H1 文字／字級／字色／寬度、`body.scrollHeight`（5481）、圖片數（17）、無破圖
+- 頁首連結為站內相對路徑（`/tw/...`、`/goto/...`），留在 `xm-ltd.com`
+- Angular 正常啟動（`ng-version` 有值），無應用資源 404（僅第三方分析被封）
 
-- 移除 `<script>`（純靜態）、移除 `<base>`、`media="print"` → `all`、移除 CSP meta
-- 將所有 `https://www.xm.com/...` 的 `href/src` 改寫為根相對路徑（留在本網域）
+> `https://xm-ltd.com/` 會以 302 導向 `/tw/`（與官方行為一致），因官方 app 依網址路徑決定語系。
 
 ## 目錄
 
-- `mirror/` — 部署內容
-  - `index.html` — 首頁
-  - `tw/...`、`goto/...` — 已鏡像的站內頁面（含開戶 / 登入 / 代理）
-- `scripts/snapshot.mjs` — 擷取單頁渲染後 DOM
-- `scripts/process-mirror.mjs` — 單頁後處理
-- `scripts/mirror-pages.mjs` — 批次鏡像全站並改寫連結
-- `scripts/list-links.mjs` — 列出頁面內站內連結
-- `scripts/cf-*.mjs` — Cloudflare 儀表板 API（DNS）輔助
+- `site/` — 部署內容（官方 HTML + 鏡像資源 + `_redirects`）
+- `scripts/full-mirror.mjs` — 擷取各頁伺服器 HTML 與站內資源
+- `scripts/` 其他：`snapshot.mjs`、`process-mirror.mjs`、`mirror-pages.mjs`（早期純靜態快照）、`cf-*.mjs`（DNS）
+- `mirror/` — 早期純靜態快照版（保留供對照）
 
-## 重新產生鏡像（需以除錯埠開著的 Opera GX）
+## 重新產生（需以除錯埠開著的 Opera GX）
 
-```bash
-# Windows：以遠端除錯埠啟動 Opera GX
+```powershell
 & "$env:LOCALAPPDATA\Programs\Opera GX\opera.exe" --remote-debugging-port=9222
 
 npm i -D puppeteer-core
-node scripts/mirror-pages.mjs        # 會跳過已存在的頁面；要全重抓請先刪 mirror/
+node scripts/full-mirror.mjs      # 產生 site/
 ```
 
 ## 部署（Cloudflare Pages，免費）
 
 ```bash
-npx wrangler pages deploy mirror --project-name xm-ltd --branch main
+npx wrangler pages deploy site --project-name xm-ltd --branch main
 ```
 
 ## 自訂網域（一次性）
@@ -50,7 +48,7 @@ Cloudflare DNS（Proxy 選 **DNS only**）：
 - `CNAME  @   → xm-ltd.pages.dev`
 - `CNAME  www → xm-ltd.pages.dev`
 
-apex 上若有 Worker 管理的記錄需先移除；SSL 由 Cloudflare 自動簽發。
+apex 若有 Worker 管理的記錄需先移除；SSL 由 Cloudflare 自動簽發。
 
 ## 成本
 
@@ -62,6 +60,7 @@ apex 上若有 Worker 管理的記錄需先移除；SSL 由 Cloudflare 自動簽
 
 ## 注意
 
-- 圖片／字型／樣式表引用官方 CDN（`cloud.xm-cdn.com`），若官方改路徑可能失效。
-- 純靜態快照不含官方 Angular 互動 JS（下拉選單展開等）；版面與文字與官方一致。
-- 開戶/登入為官方 SPA 的快照，其內部再跳轉的下一層路徑不一定已鏡像（其餘一律留站內或到官方）。
+- 圖片／字型／樣式表／JS 多引用官方 CDN，官方改版需重跑鏡像。
+- 首次造訪會出現 Cookie 同意橫幅（正常；官方端已同意者不會重複出現）。
+- 首頁贈金文案可能因官方 A/B（VWO）而與官方當下不同（如 `領取歡迎贈金*` vs `領取 50% 贈金高達 $200`）。
+- 開戶／登入為官方 SPA 轉導頁快照，其再往下一層未必逐一鏡像。
