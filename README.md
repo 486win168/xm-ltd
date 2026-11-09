@@ -1,38 +1,40 @@
-# xm-ltd.com — XM（繁體中文）首頁 1:1 靜態複刻
+# xm-ltd.com — XM（繁體中文）網站 1:1 靜態鏡像
 
-將 `https://www.xm.com/tw` 官方首頁做 **1:1 靜態鏡像**，部署到 `https://xm-ltd.com`，全程零成本。
+把 `https://www.xm.com/tw` 官方網站做 **1:1 靜態鏡像**，部署到 `https://xm-ltd.com`，全程零成本。
+站內連結**留在自己的網域**（`xm-ltd.com`），不再跳回官方。
 
-驗證方式為與官方頁面比對「可見文字、DOM、關鍵版面尺寸」，結果完全一致：
+## 驗證（與官方逐項比對）
 
-- `document.body.innerText`：1259 字元（與官方相同）
-- 可見文字逐行差��：0
+- 首頁 `document.body.innerText`：1259 字元（與官方相同）、逐行差異：0（僅多出官方 lazy-load 未顯示的 6 行獎項名稱）
 - H1 位置／字級／字色、`body.scrollHeight`（5481）：與官方相同
 - 標題、字型、樣式表媒體（`all`）、圖片數、無破圖：與官方相同
 
-## 這是什麼
+## 做法
 
-- 以真實瀏覽器載入官方頁面、等 Angular 完成渲染後，**擷取最終 DOM 快照**，再去除 `<script>`、把 `media="print"` 改為 `all`、`<base>` 指向官方網域、移除 CSP。
-- 產物為單一 `mirror/index.html`，純靜態、可獨立託管。
-- 因 `<base href="https://www.xm.com/...">`，頁內資源與所有連結仍指向官方網域；點「立即開始」會前往官方 `https://www.xm.com/goto/profile/tw`。
+用真實瀏覽器（Opera GX 遠端除錯 CDP）載入官方頁、等 Angular 渲染出**最終中文 DOM**，擷取快照後處理：
+
+- 移除 `<script>`（純靜態）、移除 `<base>`、`media="print"` → `all`、移除 CSP meta
+- 將所有 `https://www.xm.com/...` 的 `href/src` 改寫為根相對路徑（留在本網域）
 
 ## 目錄
 
-- `mirror/index.html` — 部署用首頁（1:1 靜態鏡像）
-- `mirror/render.html` — 瀏覽器渲染後的原始快照
-- `scripts/snapshot.mjs` — 用 Opera GX（CDP 9222）擷取官方頁面渲染後 DOM
-- `scripts/process-mirror.mjs` — 後處理成可託管的靜態頁
-- `scripts/cf-*.mjs` — 透過 Cloudflare 儀表板 API 管理 DNS 的輔助腳本
-- `src/`, `next.config.mjs` 等 — 早期 Next.js 版本（保留，非目前部署來源）
+- `mirror/` — 部署內容
+  - `index.html` — 首頁
+  - `tw/...`、`goto/...` — 已鏡像的站內頁面（含開戶 / 登入 / 代理）
+- `scripts/snapshot.mjs` — 擷取單頁渲染後 DOM
+- `scripts/process-mirror.mjs` — 單頁後處理
+- `scripts/mirror-pages.mjs` — 批次鏡像全站並改寫連結
+- `scripts/list-links.mjs` — 列出頁面內站內連結
+- `scripts/cf-*.mjs` — Cloudflare 儀表板 API（DNS）輔助
 
-## 重新產生鏡像（需先以除錯埠開著的 Opera GX）
+## 重新產生鏡像（需以除錯埠開著的 Opera GX）
 
 ```bash
-# 以遠端除錯埠啟動 Opera GX
+# Windows：以遠端除錯埠啟動 Opera GX
 & "$env:LOCALAPPDATA\Programs\Opera GX\opera.exe" --remote-debugging-port=9222
 
 npm i -D puppeteer-core
-node scripts/snapshot.mjs mirror/render.html
-node scripts/process-mirror.mjs mirror/render.html mirror/index.html
+node scripts/mirror-pages.mjs        # 會跳過已存在的頁面；要全重抓請先刪 mirror/
 ```
 
 ## 部署（Cloudflare Pages，免費）
@@ -48,7 +50,7 @@ Cloudflare DNS（Proxy 選 **DNS only**）：
 - `CNAME  @   → xm-ltd.pages.dev`
 - `CNAME  www → xm-ltd.pages.dev`
 
-SSL 由 Cloudflare 自動簽發。apex 上若有 Worker 管理的記錄需先移除。
+apex 上若有 Worker 管理的記錄需先移除；SSL 由 Cloudflare 自動簽發。
 
 ## 成本
 
@@ -61,5 +63,5 @@ SSL 由 Cloudflare 自動簽發。apex 上若有 Worker 管理的記錄需先移
 ## 注意
 
 - 圖片／字型／樣式表引用官方 CDN（`cloud.xm-cdn.com`），若官方改路徑可能失效。
-- 純靜態快照不含官方 Angular 的互動 JS（下拉選單展開等）；版面與文字與官方一致。
-- 頁內連結指向官方網域（白標鏡像）；如需全部留在 `xm-ltd.com` 需另做路由鏡像。
+- 純靜態快照不含官方 Angular 互動 JS（下拉選單展開等）；版面與文字與官方一致。
+- 開戶/登入為官方 SPA 的快照，其內部再跳轉的下一層路徑不一定已鏡像（其餘一律留站內或到官方）。
