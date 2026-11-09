@@ -57,6 +57,12 @@ function processHtml(html) {
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com\//g, '$1="/');
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com"/g, '$1="/');
   html = html.replace(/領取歡迎贈金\*/g, "領取 50% 贈金高達 $200");
+  if (!html.includes("data-xm-consent")) {
+    html = html.replace(
+      /<head>/i,
+      '<head><script data-xm-consent>(function(){try{var n=["xmck_functional","xmck_analytical","xmck_promotional","xmck_preferences","xmck_popupShown"],c=document.cookie;for(var i=0;i<n.length;i++){if(c.indexOf(n[i]+"=")<0){document.cookie=n[i]+"=1; path=/; max-age=31536000; SameSite=Lax";}}}catch(e){}})();</script>'
+    );
+  }
   return html;
 }
 
