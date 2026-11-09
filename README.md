@@ -22,30 +22,34 @@ npm run build
 npm start
 ```
 
-## 部署到 xm-ltd.com（免費）
+## 部署到 xm-ltd.com（Cloudflare Pages，免費）
 
-### 方式 A：Vercel（推薦）
+本站以靜態匯出（`next.config.mjs` 的 `output: "export"`）產出 `out/`，直接託管於 Cloudflare Pages。
 
-1. 將本目錄推送到 GitHub：
+### 首次部署
 
-   ```bash
-   git remote add origin https://github.com/<你的帳號>/xm-ltd.git
-   git push -u origin main
-   ```
+```bash
+npm run build
+npx wrangler pages project create xm-ltd --production-branch main --force
+npx wrangler pages deploy out --project-name xm-ltd --branch main
+```
 
-2. 前往 [vercel.com](https://vercel.com)，用 GitHub 登入，點 **Add New → Project**，匯入剛才的倉庫。
-3. Framework 會自動識別為 **Next.js**，直接按 **Deploy**。
-4. 部署完成後，進入 **Project → Settings → Domains**，新增 `xm-ltd.com`。
-5. 依 Vercel 指示，在域名商後台設定 DNS：
-   - 根域 `xm-ltd.com`：新增 `A` 記錄指向 `76.76.21.21`
-   - 子域 `www`：新增 `CNAME` 指向 `cname.vercel-dns.com`
-6. 回到 Vercel 等待 DNS 驗證通過，SSL 憑證會自動簽發。
+### 更新網站
 
-### 方式 B：Netlify
+```bash
+npm run build
+npx wrangler pages deploy out --project-name xm-ltd --branch main
+```
 
-1. 推送到 GitHub 後，於 [netlify.com](https://netlify.com) 匯入倉庫。
-2. Build command：`npm run build`，Publish directory：`.next`（安裝 `@netlify/plugin-nextjs`）。
-3. 於 **Domain settings** 新增 `xm-ltd.com`，依指示設定 DNS。
+### 自訂網域
+
+於 Cloudflare Pages 專案加入自訂網域 `xm-ltd.com` 與 `www.xm-ltd.com`，
+並在該網域的 Cloudflare DNS 新增（Proxy 選 **DNS only**）：
+
+- `CNAME  @   → xm-ltd.pages.dev`
+- `CNAME  www → xm-ltd.pages.dev`
+
+SSL 由 Cloudflare 自動簽發。務必先移除 apex 上任何由 Worker 管理的記錄。
 
 ## 技術棧成本
 
@@ -53,8 +57,8 @@ npm start
 | --- | --- | --- |
 | 框架 | Next.js + Tailwind CSS | $0 |
 | 代碼託管 | GitHub | $0 |
-| 主機 | Vercel / Netlify | $0 |
-| SSL | Let's Encrypt（自動） | $0 |
+| 主機 | Cloudflare Pages | $0 |
+| SSL | Cloudflare 自動 | $0 |
 
 ## 注意
 
