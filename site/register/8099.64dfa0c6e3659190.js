@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkregistration=self.webpackChunkregistration||[]).push([[8099],{8099(e,t,s){e.exports=s.p+"assets/i18n/tw.e1d075718eb2ed33.json"}}]);

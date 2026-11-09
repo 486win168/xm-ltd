@@ -34,6 +34,7 @@ const paths = [
   "/tw/xm-csr",
   "/tw/xm-reviews",
   "/tw/login",
+  "/tw/register/profile-account",
 ];
 
 const isAsset = (p) =>
@@ -56,6 +57,7 @@ function processHtml(html) {
   html = html.replace(/media="print"/g, 'media="all"');
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com\//g, '$1="/');
   html = html.replace(/\b(href|src)="https:\/\/(www\.)?xm\.com"/g, '$1="/');
+  html = html.replace(/href="\/goto\/profile\/tw"/g, 'href="/tw/register/profile-account"');
   html = html.replace(/領取歡迎贈金\*/g, "領取 50% 贈金高達 $200");
   if (!html.includes("data-xm-consent")) {
     html = html.replace(
@@ -82,7 +84,8 @@ async function onResponse(resp) {
     const rt = resp.request().resourceType();
     if (rt === "document" || rt === "preflight") return;
     if (u.pathname.startsWith("/akam/") || u.pathname.startsWith("/cdn-cgi/")) return;
-    if (!isAsset(u.pathname)) return;
+    const ct = resp.headers()["content-type"] || "";
+    if (ct.includes("text/html")) return;
     if (seen.has(u.pathname)) return;
     seen.add(u.pathname);
     const buf = Buffer.from(await resp.buffer());

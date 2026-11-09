@@ -1,0 +1,18 @@
+{
+  "additional_accounts_basedOnTheInformation": "根據資料顯示，您無法開立新帳戶。",
+  "additional_accounts_somethingWentWrong": "抱歉，出現錯誤。請再試一次。如果問題依然存在，請聯繫客服專屬部門。",
+  "edu_Somethingwentwrongalong": "抱歉，出現錯誤。請再試一次。如果問題依然存在，請聯繫客服專屬部門。",
+  "edu_TryAgain": "再試一次",
+  "forgot_pass_login": "登入",
+  "progressiveRegForm_2026April_banner_bullet_instantWithdrawals": "立即出金",
+  "progressiveRegForm_2026April_banner_bullet_noRejections": "無拒絕訂單",
+  "progressiveRegForm_2026April_banner_bullet_ultraFastExecution": "極速執行速度",
+  "progressiveRegForm_2026April_banner_trustedByOver20MMTraders_title": "深受信任，超過<br><span>2,000 萬交易者</span>",
+  "registration_profile_anEmailHas": "驗證信件已發送至 {{email}}，請依指示驗證電郵地址，完成 XM 帳戶設定。",
+  "registration_profile_ifYouDoNot": "我們致力確保您迅速收到電郵通知，若您尚未收到，請查看“垃圾信件匣”。",
+  "registration_profile_ourRecordsShow": "系統顯示，您名下有<span class=\"{{style}}\">已封存/關閉</span>的 XM 交易帳戶。",
+  "registration_profile_pleaseCheckYourEmail": "請檢查您的電郵信箱。",
+  "registration_profile_thereWasAProblem": "開戶作業失敗，請稍後再試或電郵至 <a href=\"mailto:{{support_email}}\" class=\"{{style}}\">{{support_email}}</a> 諮詢。",
+  "registration_profile_thisEmailIsAlready": "此信箱已經開立過交易帳戶，請直接登入。",
+  "registration_profile_weAreCurrently": "您的開戶作業無法完成，因為已有用戶使用該電郵地址。請確認資訊後再試一次。如果仍有問題，請電郵至 <a href=\"mailto:{{email}}\" class=\"{{style}}\">{{email}}</a> 諮詢，我們將盡速為您服務。"
+}

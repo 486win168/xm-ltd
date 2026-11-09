@@ -1,0 +1,20 @@
+{
+  "additional_accounts_basedOnTheInformation": "Based on the information provided, you are not eligible to open an account.",
+  "additional_accounts_somethingWentWrong": "Something went wrong along the way. Please try again. If the problem persists, contact support.",
+  "edu_Somethingwentwrongalong": "Something went wrong along the way. Please try again. If the problem persists, contact support.",
+  "edu_TryAgain": "Try Again",
+  "forgot_pass_login": "Login",
+  "progressiveRegForm_2026April_banner_bullet_instantWithdrawals": "Instant withdrawals",
+  "progressiveRegForm_2026April_banner_bullet_noRejections": "No rejections",
+  "progressiveRegForm_2026April_banner_bullet_ultraFastExecution": "Ultra-fast execution",
+  "progressiveRegForm_2026April_banner_trustedByOver20MMTraders_title": "Trusted by over<br><span>20 million traders</span>",
+  "registration_profile_anEmailHas": "An email has been sent to {{email}}. Please verify your email address to complete your XM profile registration.",
+  "registration_profile_ifYouDoNot": "If you do not see the email in a few minutes, check your “junk” or “spam” folder. We make every effort to ensure that these emails are delivered.",
+  "registration_profile_ourRecordsShow": "Our records show that you are a current holder of <span class=\"{{style}}\">Archived/Closed</span> XM Real Accounts.",
+  "registration_profile_pleaseCheckYourEmail": "Please check your email.",
+  "registration_profile_thereWasAProblem": "There was a problem opening your account. Please try again or contact us at <a href=\"mailto:{{support_email}}\" class=\"{{style}}\">{{support_email}}</a> for further assistance",
+  "registration_profile_thisEmailIsAlready": "This email is already associated with an existing account. Login instead.",
+  "registration_profile_weAreCurrently": "We are currently unable to complete your registration process as the email address you have entered appears to be associated with another user. Please review the information you have provided and try again. If the problem persists, please contact <a href=\"mailto:{{email}}\" class=\"{{style}}\">{{email}}</a> to resolve the issue.",
+  "xmtd_registration_profile_anEmailHas": "An email has been sent to {{email}}. Please verify your email address to complete your profile registration.",
+  "xmtd_registration_profile_ourRecordsShow": "Our records show that you are a current holder of <span class=\"{{style}}\">Archived/Closed</span> Real Accounts."
+}
