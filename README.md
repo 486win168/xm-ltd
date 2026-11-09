@@ -1,66 +1,65 @@
-# XM Taiwan 首頁 & 開戶頁複刻
+# xm-ltd.com — XM（繁體中文）首頁 1:1 靜態複刻
 
-以 **Next.js 14 (App Router) + Tailwind CSS** 打造的 `xm.com/tw` 首頁與「立即開始」跳轉頁複刻，
-專為部署至 **`xm-ltd.com`** 而設計，全程零成本。
+將 `https://www.xm.com/tw` 官方首頁做 **1:1 靜態鏡像**，部署到 `https://xm-ltd.com`，全程零成本。
 
-## 頁面
+驗證方式為與官方頁面比對「可見文字、DOM、關鍵版面尺寸」，結果完全一致：
 
-- `/` — 首頁（導航列、英雄區大圖、CTA 按鈕）
-- `/open-account` — 「立即開始」跳轉後的開戶表單頁
+- `document.body.innerText`：1259 字元（與官方相同）
+- 可見文字逐行差��：0
+- H1 位置／字級／字色、`body.scrollHeight`（5481）：與官方相同
+- 標題、字型、樣式表媒體（`all`）、圖片數、無破圖：與官方相同
 
-## 本地開發
+## 這是什麼
 
-```bash
-npm install
-npm run dev      # http://localhost:3000
-```
+- 以真實瀏覽器載入官方頁面、等 Angular 完成渲染後，**擷取最終 DOM 快照**，再去除 `<script>`、把 `media="print"` 改為 `all`、`<base>` 指向官方網域、移除 CSP。
+- 產物為單一 `mirror/index.html`，純靜態、可獨立託管。
+- 因 `<base href="https://www.xm.com/...">`，頁內資源與所有連結仍指向官方網域；點「立即開始」會前往官方 `https://www.xm.com/goto/profile/tw`。
 
-## 生產構建
+## 目錄
 
-```bash
-npm run build
-npm start
-```
+- `mirror/index.html` — 部署用首頁（1:1 靜態鏡像）
+- `mirror/render.html` — 瀏覽器渲染後的原始快照
+- `scripts/snapshot.mjs` — 用 Opera GX（CDP 9222）擷取官方頁面渲染後 DOM
+- `scripts/process-mirror.mjs` — 後處理成可託管的靜態頁
+- `scripts/cf-*.mjs` — 透過 Cloudflare 儀表板 API 管理 DNS 的輔助腳本
+- `src/`, `next.config.mjs` 等 — 早期 Next.js 版本（保留，非目前部署來源）
 
-## 部署到 xm-ltd.com（Cloudflare Pages，免費）
-
-本站以靜態匯出（`next.config.mjs` 的 `output: "export"`）產出 `out/`，直接託管於 Cloudflare Pages。
-
-### 首次部署
+## 重新產生鏡像（需先以除錯埠開著的 Opera GX）
 
 ```bash
-npm run build
-npx wrangler pages project create xm-ltd --production-branch main --force
-npx wrangler pages deploy out --project-name xm-ltd --branch main
+# 以遠端除錯埠啟動 Opera GX
+& "$env:LOCALAPPDATA\Programs\Opera GX\opera.exe" --remote-debugging-port=9222
+
+npm i -D puppeteer-core
+node scripts/snapshot.mjs mirror/render.html
+node scripts/process-mirror.mjs mirror/render.html mirror/index.html
 ```
 
-### 更新網站
+## 部署（Cloudflare Pages，免費）
 
 ```bash
-npm run build
-npx wrangler pages deploy out --project-name xm-ltd --branch main
+npx wrangler pages deploy mirror --project-name xm-ltd --branch main
 ```
 
-### 自訂網域
+## 自訂網域（一次性）
 
-於 Cloudflare Pages 專案加入自訂網域 `xm-ltd.com` 與 `www.xm-ltd.com`，
-並在該網域的 Cloudflare DNS 新增（Proxy 選 **DNS only**）：
+Cloudflare DNS（Proxy 選 **DNS only**）：
 
 - `CNAME  @   → xm-ltd.pages.dev`
 - `CNAME  www → xm-ltd.pages.dev`
 
-SSL 由 Cloudflare 自動簽發。務必先移除 apex 上任何由 Worker 管理的記錄。
+SSL 由 Cloudflare 自動簽發。apex 上若有 Worker 管理的記錄需先移除。
 
-## 技術棧成本
+## 成本
 
 | 項目 | 方案 | 成本 |
 | --- | --- | --- |
-| 框架 | Next.js + Tailwind CSS | $0 |
-| 代碼託管 | GitHub | $0 |
 | 主機 | Cloudflare Pages | $0 |
+| 網域 DNS | Cloudflare | $0 |
 | SSL | Cloudflare 自動 | $0 |
 
 ## 注意
 
-- 頁面圖片直接引用 XM 官方 CDN（`cloud.xm-cdn.com`），若原站更動路徑可能失效。
-- 本複刻為獨立重寫，非直接抄襲官方代碼。
+- 圖片／字型／樣式表引用官方 CDN（`cloud.xm-cdn.com`），若官方改路徑可能失效。
+- 純靜態快照不含官方 Angular 的互動 JS（下拉選單展開等）；版面與文字與官方一致。
+- 頁內連結指向官方網域（白標鏡像）；如需全部留在 `xm-ltd.com` 需另做路由鏡像。
