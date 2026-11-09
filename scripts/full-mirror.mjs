@@ -60,7 +60,7 @@ function processHtml(html) {
   if (!html.includes("data-xm-consent")) {
     html = html.replace(
       /<head>/i,
-      '<head><script data-xm-consent>(function(){try{var n=["xmck_functional","xmck_analytical","xmck_promotional","xmck_preferences","xmck_popupShown"],c=document.cookie;for(var i=0;i<n.length;i++){if(c.indexOf(n[i]+"=")<0){document.cookie=n[i]+"=1; path=/; max-age=31536000; SameSite=Lax";}}}catch(e){}})();</script>'
+      '<head><script data-xm-consent>(function(){try{var d=document;var set=function(k,v){if(d.cookie.indexOf(k+"=")<0){d.cookie=k+"="+v+"; path=/; max-age=31536000; SameSite=Lax";}};set("XM_AKAMAI_VISITOR_COUNTRY","TW");["xmck_functional","xmck_analytical","xmck_promotional","xmck_preferences","xmck_popupShown"].forEach(function(k){set(k,"1");});}catch(e){}})();</script>'
     );
   }
   return html;
