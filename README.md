@@ -61,7 +61,8 @@ apex 若有 Worker 管理的記錄需先移除；SSL 由 Cloudflare 自動簽發
 ## 注意
 
 - 圖片／字型／樣式表／JS 多引用官方 CDN，官方改版需重跑鏡像。
-- 開頭注入小腳本預先設定 `XM_AKAMAI_VISITOR_COUNTRY=TW`（語言選單國旗狀態與官方一致）並預先同意 Cookie（`xmck_*`），新訪客不顯示 Cookie 橫幅。
+- 開頭注入小腳本預先設定 `XM_AKAMAI_VISITOR_COUNTRY=TW`（語言選單國旗狀態與官方一致）並預先同意 Cookie（`xmck_*`），新訪客不顯示 Cookie 橫幅/modal。
+- 註冊頁 `/tw/register/profile-account`（另一個子 app，base `/register/`）已一併鏡像；其無副檔名資源以 `site/_headers` 指定正確 MIME（text/css、text/javascript），「立即開始」指向此頁。
 - 官方的跑馬燈（獎項、行情）與數字翻牌為即時動畫，截圖比對時會因相位不同而有差異；暫停動畫後與官方幾近像素一致（頂部差異 0.07%）。
 - `/pubapi/*`（促銷卡等資料端點）亦已鏡像，避免首頁「獨家心選」少卡。
 - 首頁贈金文案可能因官方 A/B（VWO）而與官方當下不同，已烘焙官方版本。
